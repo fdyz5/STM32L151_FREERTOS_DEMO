@@ -35,7 +35,10 @@ TaskHandle_t Runing_State_Handler;     //任务句柄
 void  Runing_State(void *pvParameters)
 {
     while(1) {
-        Reversal_LED();
+       // Reversal_LED();
+			LED_Control(0);
+        vTaskDelay(100);   //延时1s
+						LED_Control(1);
         vTaskDelay(100);   //延时1s
 #if DEBUG_LOG_PRINTF  
 		/* 检测任务堆栈使用大小的一种方式，通过设置FreeRTOS的宏INCLUDE_uxTaskGetStackHighWaterMark开启

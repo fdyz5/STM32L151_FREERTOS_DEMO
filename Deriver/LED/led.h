@@ -22,7 +22,7 @@
 
 #define  LED_AHBPeriph_PORT		RCC_AHBPeriph_GPIOA
 #define  LED_GPIO_PORT			GPIOA
-#define  LED_GPIO_PIN			GPIO_Pin_0
+#define  LED_GPIO_PIN			GPIO_Pin_8
 
 #define LED_RED PAout(0)// PA0	
 
