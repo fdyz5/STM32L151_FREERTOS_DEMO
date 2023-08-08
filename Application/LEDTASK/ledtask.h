@@ -28,6 +28,7 @@ void Creat_LED_Task(void);
 void LEDTaskSuspend(void);
 void LEDTaskResume(void);
 
+void Creat_LED2_Task(void);
 #endif  /* __LEDTASK_H */
 
 

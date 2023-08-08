@@ -74,7 +74,7 @@ extern uint32_t SystemCoreClock;
 #define configCPU_CLOCK_HZ						(SystemCoreClock)       //CPU频率  默认32Mhz 可降低为16Mhz
 
 #define configMAX_PRIORITIES					(32)                    //可使用的最大优先级（0~31）
-#define configMINIMAL_STACK_SIZE				((unsigned short)130)   //空闲任务使用的堆栈大小
+#define configMINIMAL_STACK_SIZE				((unsigned short)130)   //空闲任务使用的堆栈大小，任务实际堆栈大小是我们定义的4倍
 #define configMAX_TASK_NAME_LEN					(20)                    //任务名字字符串长度
 
 #define configUSE_16_BIT_TICKS					0                       //系统节拍计数器变量数据类型，
@@ -148,6 +148,8 @@ extern uint32_t SystemCoreClock;
 #define INCLUDE_eTaskGetState			        1
 #define INCLUDE_xTimerPendFunctionCall	        1
 #define INCLUDE_uxTaskGetStackHighWaterMark     1
+
+#define INCLUDE_xTaskGetHandle             1
 /***************************************************************************************************************/
 /*                                FreeRTOS与中断有关的配置选项                                                  */
 /***************************************************************************************************************/

@@ -22,6 +22,7 @@
 
 
 TaskHandle_t Runing_State_Handler;     //任务句柄
+TaskHandle_t LED2_Task_Handler;     //任务句柄
 
 /**************************************************************************
 * 函数名称: Runing_State
@@ -35,11 +36,9 @@ TaskHandle_t Runing_State_Handler;     //任务句柄
 void  Runing_State(void *pvParameters)
 {
     while(1) {
-       // Reversal_LED();
-			LED_Control(0);
-        vTaskDelay(100);   //延时1s
-						LED_Control(1);
-        vTaskDelay(100);   //延时1s
+			  LED1_TOGGLE;
+       // vTaskDelay(100);   //延时1s
+			vTaskDelay(pdMS_TO_TICKS(1000));
 #if DEBUG_LOG_PRINTF  
 		/* 检测任务堆栈使用大小的一种方式，通过设置FreeRTOS的宏INCLUDE_uxTaskGetStackHighWaterMark开启
 		 * uxTaskGetStackHighWaterMark()主要用来查询指定任务的运行历史中， 其栈空间还差多少就要溢出。
@@ -49,6 +48,42 @@ void  Runing_State(void *pvParameters)
 #endif
 	}
 }
+
+// 定义一个计数信号量句柄
+SemaphoreHandle_t xCountingSemaphore;
+/**************************************************************************/
+void  LED2_Task(void *pvParameters)
+{ 
+	char *p = "Read these notes carefully and keep them for future reference.";
+	uint16_t  usRunningCount = 0;
+	    // 创建计数信号量，初始值为0，最大值为5
+    xCountingSemaphore = xSemaphoreCreateCounting(5, 0);
+    while(1) 
+		{
+				if (xSemaphoreTake(xCountingSemaphore, pdMS_TO_TICKS(2000)) == pdTRUE) 
+			 {
+			// 成功获取到资源后执行任务操作
+			// ...
+			 }
+			 else
+			 {
+					LED2_TOGGLE;
+				 //vTaskDelay(pdMS_TO_TICKS(2000));
+			 /*****************************************************************/
+	#if DEBUG_LOG_PRINTF  
+			/* 检测任务堆栈使用大小的一种方式，通过设置FreeRTOS的宏INCLUDE_uxTaskGetStackHighWaterMark开启
+			 * uxTaskGetStackHighWaterMark()主要用来查询指定任务的运行历史中， 其栈空间还差多少就要溢出。
+			 * 这个值被称为栈空间的“高水线(High Water Mark)”。需要先设置大堆栈，然后合理化设置实际堆栈。*/
+				printf("Task running count is = %d\r\n",usRunningCount++);
+			  LOG_D("Reference task stack size = %d", ((int )LED2_Task_STK_SIZE-(int)uxTaskGetStackHighWaterMark(NULL))*2);
+	#endif
+			 }
+	  }
+}
+/**************************************************************************/
+
+
+
 
 /**************************************************************************
 * 函数名称: LEDTaskSuspend
@@ -101,12 +136,16 @@ void Creat_LED_Task(void)
 }
 
 
-
-
-
-
-
-
+void Creat_LED2_Task(void)
+{
+    //动态方式创建运行状态灯任务
+    xTaskCreate((TaskFunction_t	)LED2_Task,		      //任务函数
+                (const char* 	)"LED2_Task",	      //任务名称
+                (uint16_t 		)LED2_Task_STK_SIZE,	  //任务栈大小
+                (void* 		  	)NULL,				      //传递给任务函数的参数
+                (UBaseType_t 	)LED2_Task_PRIO, 	  //任务优先级
+                (TaskHandle_t*  )&LED2_Task_Handler);  //任务句柄
+}
 
 
 

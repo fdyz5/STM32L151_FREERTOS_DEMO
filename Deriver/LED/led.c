@@ -31,15 +31,21 @@
 void bsp_InitLED(void)
 {
     GPIO_InitTypeDef  GPIO_InitStructure;
-    RCC_AHBPeriphClockCmd(LED_AHBPeriph_PORT, ENABLE);
+	  RCC_AHBPeriphClockCmd(LED_AHBPeriph_PORT|LED2_AHBPeriph_PORT|LED3_AHBPeriph_PORT, ENABLE);
 
     GPIO_InitStructure.GPIO_Mode = GPIO_Mode_OUT;
     GPIO_InitStructure.GPIO_OType = GPIO_OType_PP;
     GPIO_InitStructure.GPIO_Speed = GPIO_Speed_400KHz;
     GPIO_InitStructure.GPIO_PuPd = GPIO_PuPd_UP;
+	
     GPIO_InitStructure.GPIO_Pin = LED_GPIO_PIN;
-
     GPIO_Init(LED_GPIO_PORT, &GPIO_InitStructure);
+	
+	  GPIO_InitStructure.GPIO_Pin = LED2_GPIO_PIN;
+    GPIO_Init(LED2_GPIO_PORT, &GPIO_InitStructure);
+	
+	  GPIO_InitStructure.GPIO_Pin = LED3_GPIO_PIN;
+    GPIO_Init(LED3_GPIO_PORT, &GPIO_InitStructure);
 }
 
 /**************************************************************************
@@ -55,6 +61,12 @@ void LED_Control(uint8_t valed)
 {
     if(valed == 1)	GPIO_SetBits(LED_GPIO_PORT, LED_GPIO_PIN);  	//输出高
     if(valed == 0)	GPIO_ResetBits(LED_GPIO_PORT, LED_GPIO_PIN);	//输出低
+	
+//	  if(valed == 1)	GPIO_SetBits(LED3_GPIO_PORT, LED3_GPIO_PIN);  	//输出高
+//    if(valed == 0)	GPIO_ResetBits(LED3_GPIO_PORT, LED3_GPIO_PIN);	//输出低
+	
+//		  if(valed == 1)	GPIO_SetBits(LED2_GPIO_PORT, LED2_GPIO_PIN);  	//输出高
+//    if(valed == 0)	GPIO_ResetBits(LED2_GPIO_PORT, LED2_GPIO_PIN);	//输出低
 }
 
 /**************************************************************************
@@ -67,8 +79,8 @@ void LED_Control(uint8_t valed)
 * 2020/09/07       V1.0      woody         创建
 **************************************************************************/
 void Reversal_LED(void)
-{
-    LED_RED = !LED_RED;
+{  
+    LED_RED = ~LED_RED;
 }
 
 

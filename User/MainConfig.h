@@ -26,6 +26,7 @@
 #include "task.h"
 #include "timers.h"
 #include "semphr.h"
+#include "event_groups.h"
 
 /*****************************************
  * String函数头文件
@@ -42,7 +43,7 @@
 #include "delay.h"
 
 /***********************************     版本设置    **************************************/
-#define  STM32_VERSION "Nercita 2020/09/07 @ v1.0"
+#define  STM32_VERSION "FreeRTOS-STM32L151 2023/08/07 @ v1.0"
 
 /***********************************    控制设备宏   **************************************/
 #define DEBUG_LOG_PRINTF 1  //开启(1)/关闭(0) 串口log打印 
@@ -90,7 +91,16 @@ extern  TaskHandle_t StartTask_Handler;		//任务句柄
 #define Runing_State_STK_SIZE    128         //任务堆栈大小	
 extern TaskHandle_t Runing_State_Handler;    //任务句柄
 
+
+//创建任务2  运行状态指示灯任务
+#define LED2_Task_PRIO		 5            //任务优先级
+#define LED2_Task_STK_SIZE    64         //任务堆栈大小	
+extern TaskHandle_t LED2_Task_Handler;    //任务句柄
 		
+extern TaskHandle_t xTaskAHandle, xTaskBHandle;		
+extern TaskHandle_t TaskSenderHandle;
+extern TaskHandle_t TaskReceiverHandle;
+extern TaskHandle_t TaskHandle;
 		
 /*********************************** BSP层NVIC优先级 设置 **************************************/
 //#define USART1_PRIO				14			//优先级
