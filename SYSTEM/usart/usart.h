@@ -22,9 +22,31 @@
 #include "stdio.h"
 #include "stdint.h"
 
+typedef uint32_t  u32;
+typedef uint16_t u16;
+typedef uint8_t  u8;
 
-
-void USART1_Init(uint32_t bound);
+#define USART_REC_LEN  			200  	//定义最大接受字节数200
+#define EN_USART1_RX 			1		//1：使能 0：禁止
+	  	
+extern u8  USART_RX_BUF[USART_REC_LEN]; //½ÓÊÕ»º³å,×î´óUSART_REC_LEN¸ö×Ö½Ú.Ä©×Ö½ÚÎª»»ÐÐ·û 
+extern u16 USART_RX_STA;         		//½ÓÊÕ×´Ì¬±ê¼Ç	
+#define BUFLEN 256      //Êý×é»º´æ´óÐ¡
+typedef struct _UART_BUF
+{
+    char buf [BUFLEN+1];               
+    unsigned int index ;
+}UART_BUF;
+void uart1_init(u32 bound);     //´®¿Ú³õÊ¼»¯
+void uart2_init(u32 bound);
+void uart3_init(u32 bound);
+void Uart1_SendStr(char*SendBuf);   //×Ö·û´®·¢ËÍ
+void Uart2_SendStr(char*SendBuf);
+void Uart3_SendStr(char*SendBuf);
+void Clear_Buffer(void);
+extern UART_BUF buf_uart1;     //CH340
+extern UART_BUF buf_uart2;     //NBIOT
+extern UART_BUF buf_uart3;     //TTL
 
 
 #endif   /*  __USART_H  */

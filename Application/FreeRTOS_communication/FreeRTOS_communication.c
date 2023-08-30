@@ -1,10 +1,10 @@
 #include "FreeRTOS_communication.h"
 
-#define MUTEX_TEST_EN 0
+#define MUTEX_TEST_EN 1
 #define EVENT_TEST_EN 0
 #define EVENT_NOTFICATION_EN   0
 #define SOFEWARETIME_EN    0
-#define FREEHEAPSIZE_EN    1
+#define FREEHEAPSIZE_EN    0
 /***************互斥量测试*********************/
 #if MUTEX_TEST_EN
 //// ??????
@@ -17,33 +17,39 @@ void TaskA(void *pvParameters) {
     xMutex = xSemaphoreCreateMutex();
     while (1) {
         // ?????
-        if (xSemaphoreTake(xMutex, pdMS_TO_TICKS(100)) == pdTRUE) 
-					{
-            // ??????,???????
-            sharedCounter++;
-            printf("TaskA: sharedCounter = %d\n", sharedCounter);
-            // ?????
-            xSemaphoreGive(xMutex);
-        }
+//        if (xSemaphoreTake(xMutex, pdMS_TO_TICKS(100)) == pdTRUE) 
+//					{
+//            // ??????,???????
+//            sharedCounter++;
+//            printf("TaskA: sharedCounter = %d\n", sharedCounter);
+//            // ?????
+//            xSemaphoreGive(xMutex);
+//        }
         // ??????,????????
-				printf("Other TaskA running\r\n");
-        vTaskDelay(pdMS_TO_TICKS(500));
+				printf("TaskA running\r\n");
+			//	delay_ms(1000);
+			 vTaskDelay(pdMS_TO_TICKS(1000));
+				printf("Test delay_ms\r\n");
+			//	delay_ms(100);
+			 vTaskDelay(pdMS_TO_TICKS(100));
+				printf("Test delay_ms100\r\n");
+        vTaskDelay(pdMS_TO_TICKS(1000));
     }
 }
 
 void TaskB(void *pvParameters) {
     while (1) {
         // ?????
-        if (xSemaphoreTake(xMutex, pdMS_TO_TICKS(100)) == pdTRUE) 
-					{
-            // ??????,???????
-            sharedCounter--;
-            printf("TaskB: sharedCounter = %d\n", sharedCounter);
-            // ?????
-            xSemaphoreGive(xMutex);
-        }
+//        if (xSemaphoreTake(xMutex, pdMS_TO_TICKS(100)) == pdTRUE) 
+//					{
+//            // ??????,???????
+//            sharedCounter--;
+//            printf("TaskB: sharedCounter = %d\n", sharedCounter);
+//            // ?????
+//            xSemaphoreGive(xMutex);
+//        }
 				
-				printf("Other TaskB running\r\n");
+				printf("TaskB running\r\n");
         // ??????,????????
         vTaskDelay(pdMS_TO_TICKS(1000));
     }
@@ -52,26 +58,6 @@ void TaskB(void *pvParameters) {
 
 /***************互斥量测试*********************/
 
-// typedef union 
-//{
-//		uint32_t Data_Sta;
-//		 struct 
-//		{
-//				uint32_t DATA_READY_BIT    : 1;//电池低电量异常
-//				uint32_t DATA_READY_BIT1  : 1;//左轮悬空异常
-//				uint32_t DATA_READY_BIT2 : 1;//右轮悬空异常
-//				uint32_t DropLFAbn  : 1;//左前悬空传感器悬空异常
-//				uint32_t DropLBAbn  : 1;//左前悬空传感器悬空异常
-//				uint32_t DropRFAbn  : 1;//左前悬空传感器悬空异常
-//				uint32_t DropRBAbn  : 1;//左前悬空传感器悬空异常
-//				uint32_t UltraSonicAbn     : 1;//超声波检测到障碍物异常
-//				uint32_t LeftCollisionAbn  : 1;//左碰撞
-//				uint32_t RightCollisionAbn : 1;//右碰撞
-//				uint32_t DustBoxAbn        : 1;//尘盒不在 
-//				uint32_t InRechargeStand   : 1;//是否在充电座
-//		}Data_Sta_en;
-//}unionData_Sta;
-//unionData_Sta unData_Sta;
 /****************事件组测试*********************/
 #if EVENT_TEST_EN
 

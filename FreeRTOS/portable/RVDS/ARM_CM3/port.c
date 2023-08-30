@@ -407,7 +407,7 @@ __asm void xPortPendSVHandler( void )
 	nop
 }
 /*-----------------------------------------------------------*/
-
+extern void vRecordOSRunTime(void);
 void xPortSysTickHandler( void )
 {
 	/* The SysTick runs at the lowest interrupt priority, so when this interrupt
@@ -424,6 +424,7 @@ void xPortSysTickHandler( void )
 			the PendSV interrupt.  Pend the PendSV interrupt. */
 			portNVIC_INT_CTRL_REG = portNVIC_PENDSVSET_BIT;
 		}
+	  	vRecordOSRunTime(  );  //系统计时
 	}
 	vPortClearBASEPRIFromISR();
 }

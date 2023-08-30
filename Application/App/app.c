@@ -18,11 +18,13 @@
 ************************************************************************/
 #include "app.h"
 /*   BSP 驱动头文件  */
-#include "led.h"
+#include "bsp.h"
 
 /*   app 任务头文件  */
 #include "ledtask.h"
 #include "FreeRTOS_communication.h"
+#include "TransmissionDebug.h"
+#include "AT.h"
 /**************************************************************************
 * 函数名称: bsp_Init
 * 功能描述: 初始化所有的硬件设备。该函数配置 CPU 寄存器和外设的寄存器并初始化一些全局变量。只需要调用一次
@@ -35,7 +37,10 @@
 void bsp_Init(void)
 {
 	get_chip_id();				 //获取CHIP id
-  bsp_InitLED(); 				 //LED I/O初始化
+	bsp_led_init();
+	bsp_power_init();
+	bsp_trigger_init();
+	BEEP_GPIO_Config();
 }
 
 /**************************************************************************
@@ -49,9 +54,10 @@ void bsp_Init(void)
 **************************************************************************/
 void app_Init(void)
 {
-//    Creat_LED_Task();			//创建LED任务
-//  	Creat_LED2_Task();			//创建LED任务
-	// 创建任务TaskA和TaskB
+    Creat_LED_Task();			//创建LED任务
+  	//Creat_LED2_Task();			//创建LED任务
+  	Creat_Transmission_Task();  //创建透传任务
+
 //    xTaskCreate(TaskA, "TaskA", configMINIMAL_STACK_SIZE, NULL, 3, (TaskHandle_t*  )&xTaskAHandle);
 //    xTaskCreate(TaskB, "TaskB", configMINIMAL_STACK_SIZE, NULL, 2, (TaskHandle_t*  )&xTaskBHandle);
 //	  xTaskCreate(TaskA, "TaskA", configMINIMAL_STACK_SIZE, NULL, 3, NULL);
@@ -60,8 +66,8 @@ void app_Init(void)
 //    xTaskCreate(TaskReceiver, "Receiver", configMINIMAL_STACK_SIZE, NULL, 2, &TaskReceiverHandle);
  //     xTaskCreate(TaskFunction, "Task", configMINIMAL_STACK_SIZE, NULL, tskIDLE_PRIORITY + 1, &TaskHandle);
 // xTaskCreate(vDataProcessingTask, "DataTask", configMINIMAL_STACK_SIZE, NULL, tskIDLE_PRIORITY + 1, NULL);
-	 xTaskCreate(vDataProcessingTaskA, "DataTaskA", 100, NULL, tskIDLE_PRIORITY + 1, NULL);
-	 xTaskCreate(vDataProcessingTaskB, "DataTaskB", 300, NULL, tskIDLE_PRIORITY + 1, NULL);
+//	 xTaskCreate(vDataProcessingTaskA, "DataTaskA", 100, NULL, tskIDLE_PRIORITY + 1, NULL);
+//	 xTaskCreate(vDataProcessingTaskB, "DataTaskB", 300, NULL, tskIDLE_PRIORITY + 1, NULL);
 
 
 }

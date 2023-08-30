@@ -41,9 +41,9 @@
  *****************************************/
 #include "common.h"
 #include "delay.h"
-
+#include "SystemTime.h"
 /***********************************     版本设置    **************************************/
-#define  STM32_VERSION "FreeRTOS-STM32L151 2023/08/07 @ v1.0"
+#define  STM32_VERSION "FreeRTOS-STM32L151 2023/08/25 @ v1.0"
 
 /***********************************    控制设备宏   **************************************/
 #define DEBUG_LOG_PRINTF 1  //开启(1)/关闭(0) 串口log打印 
@@ -52,6 +52,9 @@
 #else
 #define LOG_LEVEL		     LOG_LEVEL_OFF
 #endif
+
+#define   GETSYSCLK   0
+#define   Trans_DEBUG   1//透传模式——用于AT指令调试
 /*********************************** 开启 DEBUG 设置 **************************************/
 #if (LOG_LEVEL	>= LOG_LEVEL_ERROR)
 	#define	LOG_E(format,...)	\
@@ -87,16 +90,23 @@ extern  TaskHandle_t StartTask_Handler;		//任务句柄
 
 
 //创建任务1  运行状态指示灯任务
-#define Runing_State_PRIO		 5            //任务优先级
-#define Runing_State_STK_SIZE    128         //任务堆栈大小	
+#define Runing_State_PRIO		 2            //任务优先级
+#define Runing_State_STK_SIZE    200        //任务堆栈大小	
 extern TaskHandle_t Runing_State_Handler;    //任务句柄
 
 
 //创建任务2  运行状态指示灯任务
-#define LED2_Task_PRIO		 5            //任务优先级
+#define LED2_Task_PRIO		 2            //任务优先级
 #define LED2_Task_STK_SIZE    64         //任务堆栈大小	
 extern TaskHandle_t LED2_Task_Handler;    //任务句柄
 		
+		
+//创建任务  透传调试
+#define TRANSMISS_Task_PRIO		 6           //任务优先级
+#define TRANSMISS_Task_STK_SIZE    100         //任务堆栈大小	
+extern TaskHandle_t TRANSMISS_Task_Handler;    //任务句柄
+
+
 extern TaskHandle_t xTaskAHandle, xTaskBHandle;		
 extern TaskHandle_t TaskSenderHandle;
 extern TaskHandle_t TaskReceiverHandle;

@@ -20,6 +20,33 @@
 #define __APP_H
 #include "MainConfig.h" 
 
+//#include "bsp.h"
+//#include "var.h"
+//#include "aqt.h"
+//#include "rpt.h"
+//#include "cfg.h"
+//#include "dat.h"
+//#include "pls.h"
+//#include "dn.h"
+//#include "up.h"
+//#include "up1.h"
+#include "AT.h"
+
+#include "TransmissionDebug.h"
+//#include "atk_ms6050.h"
+//#include "inv_mpu.h"
+//#include "atk_ms6050.h"
+//#include "atk_ms6050_iic.h"
+//#include "hall_sensor_rotation.h"
+
+
+
+
+
+
+
+
+
 
 
 void bsp_Init(void);

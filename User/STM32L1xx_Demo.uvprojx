@@ -425,7 +425,7 @@
             <File>
               <FileName>FreeRTOS_communication.c</FileName>
               <FileType>1</FileType>
-              <FilePath>.\FreeRTOS_communication.c</FilePath>
+              <FilePath>..\Application\FreeRTOS_communication\FreeRTOS_communication.c</FilePath>
             </File>
           </Files>
         </Group>
