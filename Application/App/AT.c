@@ -222,7 +222,7 @@ int AT_START(void)
       stAT_AckTim=GetOSRunTimeNow();//获取当前时间				
 			s_ucATSta++;	
       printf("\r\ns_ucATSta:%d\r\n",s_ucATSta);		
-      Uart2_SendStr("AT+IPR=9600\r\n");			
+      //Uart2_SendStr("AT+IPR=9600\r\n");			
      return 1;			
 		}
 	}	

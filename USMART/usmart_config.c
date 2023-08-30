@@ -4,10 +4,9 @@
 //这下面要包含所用到的函数所申明的头文件(用户自己添加) 
 #include "delay.h"	
 #include "usart.h"		
-//#include "sys.h"
-//#include "lcd.h"
+
 												 
-//extern void led_set(u8 sta);
+extern void bsp_led_toggle(uint8_t n);
 
 //函数名列表初始化(用户自己添加)
 //用户直接在这里输入要执行的函数名及其查找串
@@ -19,19 +18,7 @@ struct _m_usmart_nametab usmart_nametab[]=
 #endif		   
 	(void*)delay_ms,"void delay_ms(uint32_t nms)",
  	(void*)delay_us,"void delay_us(uint32_t nus)",	 
-//	(void*)LCD_Clear,"void LCD_Clear(u16 Color)",
-//	(void*)LCD_Fill,"void LCD_Fill(u16 xsta,u16 ysta,u16 xend,u16 yend,u16 color)",
-//	(void*)LCD_DrawLine,"void LCD_DrawLine(u16 x1, u16 y1, u16 x2, u16 y2)",
-//	(void*)LCD_DrawRectangle,"void LCD_DrawRectangle(u16 x1, u16 y1, u16 x2, u16 y2)",
-//	(void*)LCD_Draw_Circle,"void LCD_Draw_Circle(u16 x0,u16 y0,u8 r)",
-//	(void*)LCD_ShowNum,"void LCD_ShowNum(u16 x,u16 y,u32 num,u8 len,u8 size)",
-//	(void*)LCD_ShowString,"void LCD_ShowString(u16 x,u16 y,u16 width,u16 height,u8 size,u8 *p)",
-//	(void*)led_set,"void led_set(u8 sta)",
-//	(void*)test_fun,"void test_fun(void(*ledset)(u8),u8 sta)",	
-//	(void*)LCD_Fast_DrawPoint,"void LCD_Fast_DrawPoint(u16 x,u16 y,u16 color)",
-//	(void*)LCD_ReadPoint,"u16 LCD_ReadPoint(u16 x,u16 y)",					 					 
-//	(void*)LCD_Display_Dir,"void LCD_Display_Dir(u8 dir)",
-//	(void*)LCD_ShowxNum,"void LCD_ShowxNum(u16 x,u16 y,u32 num,u8 len,u8 size,u8 mode)",
+	(void*)bsp_led_toggle,"bsp_led_toggle(uint8_t n)",
 };						  
 ///////////////////////////////////END///////////////////////////////////////////////
 /////////////////////////////////////////////////////////////////////////////////////

@@ -23,6 +23,7 @@
 
 #include "app.h"
 
+#include "usmart.h"
 
 TaskHandle_t StartTask_Handler;  //任务句柄 创建启动任务
 
@@ -74,15 +75,18 @@ int main(void)
     NVIC_PriorityGroupConfig(NVIC_PriorityGroup_4);
     delay_init();			//延时初始化代码
 
-uart1_init(9600);
-uart2_init(9600);
-uart3_init(9600);
-printf("\r\n ############ http://www.csgsm.com/ ############\r\n ############("__DATE__ " - " __TIME__ ")############");
+		uart_init(9600);
+		uart2_init(9600);
+		uart3_init(9600);
+    printf("\r\n ############ http://www.csgsm.com/ ############\r\n ############("__DATE__ " - " __TIME__ ")############");
     bsp_Init();				//所有硬件固件初始化
 #if DEBUG_LOG_PRINTF
     LOG_D(STM32_VERSION);
 #endif	
-	
+
+#if MYDEBUG
+    usmart_dev.init(32);
+#endif
 	
 	
     /* 创建任务 */

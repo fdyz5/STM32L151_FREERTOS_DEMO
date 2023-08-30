@@ -55,6 +55,7 @@
 
 #define   GETSYSCLK   0
 #define   Trans_DEBUG   1//透传模式——用于AT指令调试
+#define   MYDEBUG        0
 /*********************************** 开启 DEBUG 设置 **************************************/
 #if (LOG_LEVEL	>= LOG_LEVEL_ERROR)
 	#define	LOG_E(format,...)	\

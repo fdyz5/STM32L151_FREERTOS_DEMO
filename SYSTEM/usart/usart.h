@@ -29,14 +29,18 @@ typedef uint8_t  u8;
 #define USART_REC_LEN  			200  	//定义最大接受字节数200
 #define EN_USART1_RX 			1		//1：使能 0：禁止
 	  	
-extern u8  USART_RX_BUF[USART_REC_LEN]; //½ÓÊÕ»º³å,×î´óUSART_REC_LEN¸ö×Ö½Ú.Ä©×Ö½ÚÎª»»ÐÐ·û 
-extern u16 USART_RX_STA;         		//½ÓÊÕ×´Ì¬±ê¼Ç	
+extern u8  USART_RX_BUF[USART_REC_LEN]; //接收缓冲，最大USART_REC_LEN个字节，未字节为换行符
+extern u16 USART_RX_STA;         		//接收标记符号	
+void uart_init(u32 bound);
+
+
 #define BUFLEN 256      //Êý×é»º´æ´óÐ¡
 typedef struct _UART_BUF
 {
     char buf [BUFLEN+1];               
     unsigned int index ;
 }UART_BUF;
+void uart_init(uint32_t BaudRate);
 void uart1_init(u32 bound);     //´®¿Ú³õÊ¼»¯
 void uart2_init(u32 bound);
 void uart3_init(u32 bound);

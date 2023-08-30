@@ -15,7 +15,7 @@
 */
 #include "bsp.h"
 #include "app.h"
-VAR_T  g_tVar;
+//VAR_T  g_tVar;
 /* 定义每个串口结构体变量 */
 #if UART1_FIFO_EN == 1
 	static UART_T g_tUart1;
