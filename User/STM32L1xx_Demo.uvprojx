@@ -462,6 +462,36 @@
               <FileType>1</FileType>
               <FilePath>..\Deriver\bsp_trigger.c</FilePath>
             </File>
+            <File>
+              <FileName>bsp_cpu_adc.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\Deriver\bsp_cpu_adc.c</FilePath>
+            </File>
+            <File>
+              <FileName>bsp_eeprom_24xx.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\Deriver\bsp_eeprom_24xx.c</FilePath>
+            </File>
+            <File>
+              <FileName>bsp_i2c_gpio.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\Deriver\bsp_i2c_gpio.c</FilePath>
+            </File>
+            <File>
+              <FileName>bsp_spi_bus.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\Deriver\bsp_spi_bus.c</FilePath>
+            </File>
+            <File>
+              <FileName>bsp_spi_flash.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\Deriver\bsp_spi_flash.c</FilePath>
+            </File>
+            <File>
+              <FileName>bsp_iwdg.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\Deriver\bsp_iwdg.c</FilePath>
+            </File>
           </Files>
         </Group>
         <Group>
