@@ -4,10 +4,12 @@
 //这下面要包含所用到的函数所申明的头文件(用户自己添加) 
 #include "delay.h"	
 #include "usart.h"		
-
+#include "bsp_cpu_adc.h"	
+#include "bsp_spi_flash.h"
 												 
 extern void bsp_led_toggle(uint8_t n);
-
+extern void buzzer_beep(uint16_t milliseconds);
+extern void ee_Test(u8 inputnub);
 //函数名列表初始化(用户自己添加)
 //用户直接在这里输入要执行的函数名及其查找串
 struct _m_usmart_nametab usmart_nametab[]=
@@ -19,6 +21,13 @@ struct _m_usmart_nametab usmart_nametab[]=
 	(void*)delay_ms,"void delay_ms(uint32_t nms)",
  	(void*)delay_us,"void delay_us(uint32_t nus)",	 
 	(void*)bsp_led_toggle,"bsp_led_toggle(uint8_t n)",
+	(uint16_t*)bsp_cpu_adc_get_channel1,"uint16_t bsp_cpu_adc_get_channel1(uint16_t vref)",
+	(uint16_t*)bsp_cpu_adc_get_channel2,"uint16_t bsp_cpu_adc_get_channel2(uint16_t vref)",
+	(uint16_t*)bsp_cpu_adc_get_battery,"uint16_t bsp_cpu_adc_get_battery(void)  ",	
+	(void*)ee_Test,"void ee_Test(uint16_t _usAddress,u8 inputnumb)",
+	(uint32_t*)sf_ReadID,"uint32_t sf_ReadID(void)",	
+	
+	(void*)buzzer_beep,"void buzzer_beep(uint16_t milliseconds)",
 };						  
 ///////////////////////////////////END///////////////////////////////////////////////
 /////////////////////////////////////////////////////////////////////////////////////

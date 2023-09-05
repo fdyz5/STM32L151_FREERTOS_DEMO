@@ -76,8 +76,8 @@ int main(void)
     delay_init();			//延时初始化代码
 
 		uart_init(9600);
-		uart2_init(9600);
-		uart3_init(9600);
+		uart2_init(115200);
+		uart3_init(115200);
     printf("\r\n ############ http://www.csgsm.com/ ############\r\n ############("__DATE__ " - " __TIME__ ")############");
     bsp_Init();				//所有硬件固件初始化
 #if DEBUG_LOG_PRINTF

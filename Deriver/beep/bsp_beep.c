@@ -43,12 +43,14 @@ void BEEP_GPIO_Config(void)
     
     /* 关闭蜂鸣器*/
 		GPIO_ResetBits(BEEP_GPIO_PORT, BEEP_GPIO_PIN);	 
-	// GPIO_SetBits(BEEP_GPIO_PORT, BEEP_GPIO_PIN);	//测试蜂鸣器
+	//  GPIO_SetBits(BEEP_GPIO_PORT, BEEP_GPIO_PIN);	//测试蜂鸣器
 }
 // 控制蜂鸣器鸣叫
 void buzzer_beep(uint16_t milliseconds)
 {
-	if(g_usBeepTime > 0)
+	static OS_TimeStruct BeepStartTime = {0};//非阻塞时间结构体
+	BeepStartTime = GetOSRunTimeNow(  );//按键按下后 记录当前时间
+	if( milliseconds ) 
 	{
 	   BEEP(ON);
 	}

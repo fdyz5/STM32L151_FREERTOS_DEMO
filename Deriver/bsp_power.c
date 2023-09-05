@@ -122,6 +122,9 @@ void bsp_power_init(void)
 	bsp_power_vout_off();
 	bsp_power_vcc_on();
 	bsp_power_reset_off();	
+	
+	
+
 }
 
 void bsp_power_vdd_on(void)

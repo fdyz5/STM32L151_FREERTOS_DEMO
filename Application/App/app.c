@@ -36,11 +36,37 @@
 **************************************************************************/
 void bsp_Init(void)
 {
+		//外设驱动初始化
+		__set_PRIMASK(1);
 	get_chip_id();				 //获取CHIP id
 	bsp_led_init();
 	bsp_power_init();
 	bsp_trigger_init();
+	bsp_cpu_adc_init();
 	BEEP_GPIO_Config();
+	bsp_i2c_init();
+	delay_ms(200);       //IIC引脚初始化稳定后一定时间后开始测试
+	if(ee_CheckOk() == 0)
+	{
+		printf("NOEEPROM!\r\n");
+	}
+  else
+	{
+		printf("EEPROM!\r\n");
+	}
+	
+	bsp_InitSPIBus();	/*配置SPI总线  */
+	bsp_InitSFlash();	/* 初始化串行Flash */	
+	
+	if(g_tSF.ChipID != MX25L12835E_ID)
+	{
+		printf("NOFlash!\r\n");		
+	}
+  else
+	{
+		printf("Flash ChipID = 0x%08x\r\n",g_tSF.ChipID);		
+	}
+	__set_PRIMASK(0);
 }
 
 /**************************************************************************

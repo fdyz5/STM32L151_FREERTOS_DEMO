@@ -23,11 +23,10 @@ TaskHandle_t TRANSMISS_Task_Handler;    //任务句柄
 
 void  vTransmissionTask(void *pvParameters)
 {
-	bsp_power_ble_on();	
 	while(AT_START() == -1);
+
   while(1) 
-	{
-		
+	{	
 	#if Trans_DEBUG
 		if(buf_uart1.index != 0)
 		{

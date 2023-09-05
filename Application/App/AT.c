@@ -173,9 +173,9 @@ unsigned long int crc32_flash ( unsigned int addr, unsigned long int len )
 
 int AT_START(void)
 {
-	uint8_t ch;
-	uint16_t len, i;
-	uint8_t buf[256],*p;	
+	static uint8_t ch;
+	static uint16_t len, i;
+	static uint8_t buf[256],*p;	
 	static OS_TimeStruct stAT_AckTim;
 	if(s_ucATSta == 0)
 	{
@@ -226,48 +226,57 @@ int AT_START(void)
      return 1;			
 		}
 	}	
-//	else if(s_ucATSta == 4)
-//	{		
-//		if( TimeOut==SingleTimeoutCheck(stAT_AckTim,0,0,100))
-//		{
-//			bsp_power_psm_off();
-//			//bsp_timer_star_once(TMR_RPT, TM_100MS);	
-//			stAT_AckTim=GetOSRunTimeNow();//获取当前时间	
-//			s_ucATSta++;	
-//printf("\r\ns_ucATSta:%d\r\n",s_ucATSta);				
-//		}
-//	}
-//	else if(s_ucATSta == 5)	
-//	{		
-//		if( TimeOut==SingleTimeoutCheck(stAT_AckTim,0,0,100))
-//		{
-//			bsp_power_psm_on();
-//			//bsp_timer_star_once(TMR_RPT, TM_100MS);		
-//      stAT_AckTim=GetOSRunTimeNow();//获取当前时间				
-//			s_ucATSta++;			
-//			printf("\r\ns_ucATSta:%d\r\n",s_ucATSta);	
-//		}			
-//	}	
-//	else if(s_ucATSta == 6)
-//	{		
-//		if( TimeOut==SingleTimeoutCheck(stAT_AckTim,0,0,100))
-//		{
-//			bsp_power_psm_off();	
-//			//bsp_timer_star_once(TMR_RPT, TM_100MS);	
-//      stAT_AckTim=GetOSRunTimeNow();//获取当前时间				
-//			s_ucATSta++;			
-//			printf("\r\ns_ucATSta:%d\r\n",s_ucATSta);	
-//		}
-//	}	
-//	else if(s_ucATSta == 7)
-//	{	
-//		if( TimeOut==SingleTimeoutCheck(stAT_AckTim,0,0,100))
-//		{					
-//			return 1;
-//			printf("\r\ns_ucATSta:%d\r\n",s_ucATSta);	
-//		}
-//	}
+	else if(s_ucATSta == 4)
+	{		
+		if( TimeOut==SingleTimeoutCheck(stAT_AckTim,0,0,100))
+		{
+			bsp_power_psm_off();
+			//bsp_timer_star_once(TMR_RPT, TM_100MS);	
+			stAT_AckTim=GetOSRunTimeNow();//获取当前时间	
+			s_ucATSta++;	
+      printf("\r\ns_ucATSta:%d\r\n",s_ucATSta);				
+		}
+	}
+	else if(s_ucATSta == 5)	
+	{		
+		if( TimeOut==SingleTimeoutCheck(stAT_AckTim,0,0,100))
+		{
+			bsp_power_psm_on();
+			//bsp_timer_star_once(TMR_RPT, TM_100MS);		
+      stAT_AckTim=GetOSRunTimeNow();//获取当前时间				
+			s_ucATSta++;			
+			printf("\r\ns_ucATSta:%d\r\n",s_ucATSta);	
+		}			
+	}	
+	else if(s_ucATSta == 6)
+	{		
+		if( TimeOut==SingleTimeoutCheck(stAT_AckTim,0,0,100))
+		{
+			bsp_power_psm_off();	
+			//bsp_timer_star_once(TMR_RPT, TM_100MS);	
+      stAT_AckTim=GetOSRunTimeNow();//获取当前时间				
+			s_ucATSta++;			
+			printf("\r\ns_ucATSta:%d\r\n",s_ucATSta);	
+		}
+	}	
+	else if(s_ucATSta == 7)
+	{	
+		if( TimeOut==SingleTimeoutCheck(stAT_AckTim,0,0,100))
+		{					
+			return 1;
+			printf("\r\ns_ucATSta:%d\r\n",s_ucATSta);	
+		}
+	}
 
+	if(buf_uart2.index != 0)
+	{
+		  Uart1_SendStr(buf_uart2.buf);
+		  p = (uint8_t *)strstr((char *)buf_uart2.buf,"RDY");
+		  if(p != NULL)
+			{
+				return 1;				
+			}	
+	}	
 //	if(comGetRxTimeOut(COM_RPT))
 //	{			
 //		len = comGetRxCount(COM_RPT);
@@ -285,8 +294,7 @@ int AT_START(void)
 //			{
 //				return 1;				
 //			}			
-//		}
-//		
+//		}		
 //	}			
 	
 	return -1;	

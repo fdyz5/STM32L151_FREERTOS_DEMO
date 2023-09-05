@@ -4,11 +4,22 @@
 #ifndef __BSP_EEPROM_24XX_H
 #define __BSP_EEPROM_24XX_H
 
+#include <stdint.h>
 /* Includes ------------------------------------------------------------------*/
 #include "bsp_i2c_gpio.h"
 
 /* Exported types ------------------------------------------------------------*/
+typedef uint32_t  u32;
+typedef uint16_t u16;
+typedef uint8_t  u8;
 
+typedef int32_t  s32;
+typedef int16_t s16;
+typedef int8_t  s8;
+
+typedef uint32_t  u32;
+typedef uint16_t u16;
+typedef uint8_t  u8;
 /* Exported constants --------------------------------------------------------*/     
 
 /* #define AT24C02 */

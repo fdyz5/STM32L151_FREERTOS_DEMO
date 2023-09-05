@@ -369,7 +369,7 @@
               <MiscControls></MiscControls>
               <Define>USE_STDPERIPH_DRIVER, STM32L1XX_MD</Define>
               <Undefine></Undefine>
-              <IncludePath>..\CORE;..\STM32L1xx_FWLib\src;..\STM32L1xx_FWLib\inc;..\SYSTEM\delay;..\SYSTEM\usart;..\SYSTEM\common;..\FreeRTOS;..\FreeRTOS\include;..\FreeRTOS\MemMang;..\FreeRTOS\portable\RVDS\ARM_CM3;..\User;..\Deriver\LED;..\Application\App;..\Application\LEDTASK;..\Application\FreeRTOS_communication</IncludePath>
+              <IncludePath>..\CORE;..\STM32L1xx_FWLib\src;..\STM32L1xx_FWLib\inc;..\SYSTEM\delay;..\SYSTEM\usart;..\SYSTEM\common;..\FreeRTOS;..\FreeRTOS\include;..\FreeRTOS\MemMang;..\FreeRTOS\portable\RVDS\ARM_CM3;..\User;..\Deriver\LED;..\Application\App;..\Application\LEDTASK;..\Application\FreeRTOS_communication;..\USMART;..\Deriver;..\Application\TransmissionDebug;..\SYSTEM\SystemTime;..\SYSTEM\sys;..\Deriver\beep</IncludePath>
             </VariousControls>
           </Cads>
           <Aads>
@@ -427,21 +427,51 @@
               <FileType>1</FileType>
               <FilePath>..\Application\FreeRTOS_communication\FreeRTOS_communication.c</FilePath>
             </File>
+            <File>
+              <FileName>TransmissionDebug.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\Application\TransmissionDebug\TransmissionDebug.c</FilePath>
+            </File>
+            <File>
+              <FileName>AT.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\Application\App\AT.c</FilePath>
+            </File>
           </Files>
         </Group>
         <Group>
           <GroupName>Driver</GroupName>
           <Files>
             <File>
-              <FileName>led.c</FileName>
+              <FileName>bsp_led.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\Deriver\LED\led.c</FilePath>
+              <FilePath>..\Deriver\bsp_led.c</FilePath>
+            </File>
+            <File>
+              <FileName>bsp_power.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\Deriver\bsp_power.c</FilePath>
+            </File>
+            <File>
+              <FileName>bsp_beep.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\Deriver\beep\bsp_beep.c</FilePath>
+            </File>
+            <File>
+              <FileName>bsp_trigger.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\Deriver\bsp_trigger.c</FilePath>
             </File>
           </Files>
         </Group>
         <Group>
-          <GroupName>Common</GroupName>
+          <GroupName>SYSTEM</GroupName>
           <Files>
+            <File>
+              <FileName>usart.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\SYSTEM\usart\usart.c</FilePath>
+            </File>
             <File>
               <FileName>common.c</FileName>
               <FileType>1</FileType>
@@ -453,9 +483,14 @@
               <FilePath>..\SYSTEM\delay\delay.c</FilePath>
             </File>
             <File>
-              <FileName>usart.c</FileName>
+              <FileName>SystemTime.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\SYSTEM\usart\usart.c</FilePath>
+              <FilePath>..\SYSTEM\SystemTime\SystemTime.c</FilePath>
+            </File>
+            <File>
+              <FileName>sys.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\SYSTEM\sys\sys.c</FilePath>
             </File>
           </Files>
         </Group>
@@ -691,6 +726,26 @@
               <FileName>stm32l1xx_wwdg.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\STM32L1xx_FWLib\src\stm32l1xx_wwdg.c</FilePath>
+            </File>
+          </Files>
+        </Group>
+        <Group>
+          <GroupName>USMART</GroupName>
+          <Files>
+            <File>
+              <FileName>usmart.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\USMART\usmart.c</FilePath>
+            </File>
+            <File>
+              <FileName>usmart_config.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\USMART\usmart_config.c</FilePath>
+            </File>
+            <File>
+              <FileName>usmart_str.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\USMART\usmart_str.c</FilePath>
             </File>
           </Files>
         </Group>

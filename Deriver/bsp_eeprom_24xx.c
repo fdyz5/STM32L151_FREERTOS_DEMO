@@ -277,21 +277,22 @@ cmd_fail: /* 命令执行失败后，切记发送停止信号，避免影响I2C总线上其他设备 */
 	return 0;
 }
 
-void ee_Test(void)
+void ee_Test(uint16_t _usAddress,u8 inputnumb)
 {
 	uint32_t i;	
 	uint8_t buf[256];
-
 	for (i = 0; i < 16; i++)
 	{
-		buf[i] = 15-i;
+		buf[i] = inputnumb;
 	}
-	ee_WriteBytes(0, buf, 0x07DA, 16);
-	
-	
+	ee_WriteBytes(0, buf,  _usAddress, 16);//_usAddress:0x07DA
 	for (i = 0; i < 16; i++)
 	{
 		buf[i] = 0;
 	}	
-	ee_ReadBytes(buf, 0x07DA, 16);	
+	ee_ReadBytes(buf, _usAddress, 16);	
+	for (i = 0; i < 16; i++)
+	{
+		printf("_usAddress:%x,buf[%d]= %d\r\n",_usAddress+i,i,buf[i]);
+	}	
 }

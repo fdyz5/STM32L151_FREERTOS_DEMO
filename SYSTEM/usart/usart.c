@@ -22,96 +22,98 @@
 
 volatile char receivedData;
 
+static void uart1_receive_process_event(unsigned char ch );    	
+static void nbiot_receive_process_event(unsigned char ch );  
+
 #if DEBUG_LOG_PRINTF
 //加入以下代码,支持printf函数,而不需要选择use MicroLIB
 #if 1
-#pragma import(__use_no_semihosting)
-//标准库需要的支持函数
-struct __FILE {
-    int handle;
+		#pragma import(__use_no_semihosting)
+		//标准库需要的支持函数
+		struct __FILE {
+				int handle;
 
-};
+		};
 
-FILE __stdout;
-//定义_sys_exit()以避免使用半主机模式
-void _sys_exit(int x)
-{
-    x = x;
-}
-//重定义fputc函数
-int fputc(int ch, FILE *f)
-{
-    while((USART1->SR & 0X40) == 0); //循环发送,直到发送完毕
-    USART1->DR = (uint8_t) ch;
-    return ch;
-}
+		FILE __stdout;
+		//定义_sys_exit()以避免使用半主机模式
+		void _sys_exit(int x)
+		{
+				x = x;
+		}
+		//重定义fputc函数
+		int fputc(int ch, FILE *f)
+		{
+				while((USART1->SR & 0X40) == 0); //循环发送,直到发送完毕
+				USART1->DR = (uint8_t) ch;
+				return ch;
+		}
 #endif
 
 
 
 #if EN_USART1_RX   //如果使能了接收
-//串口1中断服务函数
-//注意读取USART_x->SR能避免莫名奇妙的错误	
-u8 USART_RX_BUF[USART_REC_LEN];     //接收最大的缓冲
-//接收状态
-//bit15:接收完成标志
-//bit14接受的0x0d
-//bit13接收到有效字节数目
-u16 USART_RX_STA=0;       //接收状态标记
+		//串口1中断服务函数
+		//注意读取USART_x->SR能避免莫名奇妙的错误	
+		u8 USART_RX_BUF[USART_REC_LEN];     //接收最大的缓冲
+		//接收状态
+		//bit15:接收完成标志
+		//bit14接受的0x0d
+		//bit13接收到有效字节数目
+		u16 USART_RX_STA=0;       //接收状态标记
 
 
-/**************************************************************************
-* 函数名称: USART_Init
-* 功能描述: USART_Init 初始化函数，(串口1功能与USB功能冲突)
-* 输入参数: 无
-* 输出参数: 无
-* 返 回 值: 无
-* -----------------------------------------------
-* 2020/09/07       V1.0      woody         创建
-**************************************************************************/
-void uart_init(uint32_t BaudRate)
-{
+		/**************************************************************************
+		* 函数名称: USART_Init
+		* 功能描述: USART_Init 初始化函数，(串口1功能与USB功能冲突)
+		* 输入参数: 无
+		* 输出参数: 无
+		* 返 回 值: 无
+		* -----------------------------------------------
+		* 2020/09/07       V1.0      woody         创建
+		**************************************************************************/
+		void uart_init(uint32_t BaudRate)
+		{
+				GPIO_InitTypeDef GPIO_InitStructure;
+				USART_InitTypeDef USART_InitStructure;
+				NVIC_InitTypeDef NVIC_InitStructure;
+				RCC_AHBPeriphClockCmd (RCC_AHBPeriph_GPIOA,ENABLE);//GPIOA
+				RCC_APB2PeriphClockCmd(RCC_APB2Periph_USART1, ENABLE);	
+				GPIO_PinAFConfig(GPIOA,GPIO_PinSource9,GPIO_AF_USART1);
+				GPIO_PinAFConfig(GPIOA,GPIO_PinSource10,GPIO_AF_USART1);
+				/*
+			*  USART1_TX -> PA9 , USART1_RX -> PA10
+			*/				
+				GPIO_InitStructure.GPIO_Pin = GPIO_Pin_9;
+				GPIO_InitStructure.GPIO_Mode = GPIO_Mode_AF;
+				GPIO_InitStructure.GPIO_Speed = GPIO_Speed_10MHz;
+				GPIO_InitStructure.GPIO_OType = GPIO_OType_PP; //ÍÆÍì¸´ÓÃÊä³ö
+				GPIO_InitStructure.GPIO_PuPd = GPIO_PuPd_UP; //ÉÏÀ­
+				GPIO_Init(GPIOA, &GPIO_InitStructure);
 
-    GPIO_InitTypeDef GPIO_InitStructure;
-    USART_InitTypeDef USART_InitStructure;
-    NVIC_InitTypeDef NVIC_InitStructure;
-    RCC_AHBPeriphClockCmd (RCC_AHBPeriph_GPIOA,ENABLE);//GPIOA
-    RCC_APB2PeriphClockCmd(RCC_APB2Periph_USART1, ENABLE);	
-    GPIO_PinAFConfig(GPIOA,GPIO_PinSource9,GPIO_AF_USART1);
-    GPIO_PinAFConfig(GPIOA,GPIO_PinSource10,GPIO_AF_USART1);
-    /*
-	*  USART1_TX -> PA9 , USART1_RX -> PA10
-	*/				
-    GPIO_InitStructure.GPIO_Pin = GPIO_Pin_9;
-    GPIO_InitStructure.GPIO_Mode = GPIO_Mode_AF;
-    GPIO_InitStructure.GPIO_Speed = GPIO_Speed_10MHz;
-    GPIO_InitStructure.GPIO_OType = GPIO_OType_PP; //ÍÆÍì¸´ÓÃÊä³ö
-    GPIO_InitStructure.GPIO_PuPd = GPIO_PuPd_UP; //ÉÏÀ­
-    GPIO_Init(GPIOA, &GPIO_InitStructure);
+				GPIO_InitStructure.GPIO_Pin = GPIO_Pin_10;
+				GPIO_InitStructure.GPIO_Mode = GPIO_Mode_AF;
+				GPIO_Init(GPIOA, &GPIO_InitStructure);
+				//Usart1 NVIC ÅäÖÃ
+				NVIC_InitStructure.NVIC_IRQChannel = USART1_IRQn;
+				NVIC_InitStructure.NVIC_IRQChannelPreemptionPriority=1 ;//ÇÀÕ¼ÓÅÏÈ¼¶3
+				NVIC_InitStructure.NVIC_IRQChannelSubPriority = 0;		//×ÓÓÅÏÈ¼¶3
+				NVIC_InitStructure.NVIC_IRQChannelCmd = ENABLE;			//IRQÍ¨µÀÊ¹ÄÜ
+				NVIC_Init(&NVIC_InitStructure);	//¸ù¾ÝÖ¸¶¨µÄ²ÎÊý³õÊ¼»¯VIC¼Ä´æÆ÷
 
-    GPIO_InitStructure.GPIO_Pin = GPIO_Pin_10;
-    GPIO_InitStructure.GPIO_Mode = GPIO_Mode_AF;
-    GPIO_Init(GPIOA, &GPIO_InitStructure);
-    //Usart1 NVIC ÅäÖÃ
-    NVIC_InitStructure.NVIC_IRQChannel = USART1_IRQn;
-    NVIC_InitStructure.NVIC_IRQChannelPreemptionPriority=1 ;//ÇÀÕ¼ÓÅÏÈ¼¶3
-    NVIC_InitStructure.NVIC_IRQChannelSubPriority = 0;		//×ÓÓÅÏÈ¼¶3
-    NVIC_InitStructure.NVIC_IRQChannelCmd = ENABLE;			//IRQÍ¨µÀÊ¹ÄÜ
-    NVIC_Init(&NVIC_InitStructure);	//¸ù¾ÝÖ¸¶¨µÄ²ÎÊý³õÊ¼»¯VIC¼Ä´æÆ÷
+				//USART ³õÊ¼»¯ÉèÖÃ
 
-    //USART ³õÊ¼»¯ÉèÖÃ
+				USART_InitStructure.USART_BaudRate = BaudRate;//Ò»°ãÉèÖÃÎª9600;
+				USART_InitStructure.USART_WordLength = USART_WordLength_8b;//×Ö³¤Îª8Î»Êý¾Ý¸ñÊ½
+				USART_InitStructure.USART_StopBits = USART_StopBits_1;//Ò»¸öÍ£Ö¹Î»
+				USART_InitStructure.USART_Parity = USART_Parity_No;//ÎÞÆæÅ¼Ð£ÑéÎ»
+				USART_InitStructure.USART_HardwareFlowControl = USART_HardwareFlowControl_None;//ÎÞÓ²¼þÊý¾ÝÁ÷¿ØÖÆ
+				USART_InitStructure.USART_Mode = USART_Mode_Rx | USART_Mode_Tx;	//ÊÕ·¢Ä£Ê½
 
-    USART_InitStructure.USART_BaudRate = BaudRate;//Ò»°ãÉèÖÃÎª9600;
-    USART_InitStructure.USART_WordLength = USART_WordLength_8b;//×Ö³¤Îª8Î»Êý¾Ý¸ñÊ½
-    USART_InitStructure.USART_StopBits = USART_StopBits_1;//Ò»¸öÍ£Ö¹Î»
-    USART_InitStructure.USART_Parity = USART_Parity_No;//ÎÞÆæÅ¼Ð£ÑéÎ»
-    USART_InitStructure.USART_HardwareFlowControl = USART_HardwareFlowControl_None;//ÎÞÓ²¼þÊý¾ÝÁ÷¿ØÖÆ
-    USART_InitStructure.USART_Mode = USART_Mode_Rx | USART_Mode_Tx;	//ÊÕ·¢Ä£Ê½
-
-    USART_Init(USART1, &USART_InitStructure); //³õÊ¼»¯´®¿Ú
-    USART_ITConfig(USART1, USART_IT_RXNE, ENABLE);//¿ªÆôÖÐ¶Ï
-    USART_Cmd(USART1, ENABLE);                    //Ê¹ÄÜ´®¿Ú 
-}
+				USART_Init(USART1, &USART_InitStructure); //³õÊ¼»¯´®¿Ú
+				USART_ITConfig(USART1, USART_IT_RXNE, ENABLE);//¿ªÆôÖÐ¶Ï
+				USART_Cmd(USART1, ENABLE);                    //Ê¹ÄÜ´®¿Ú 
+		}
 #endif
 
 
@@ -162,7 +164,6 @@ void uart1_init(uint32_t BaudRate)
 //bound:²¨ÌØÂÊ
 void uart2_init(u32 bound)
 {
-#if 1
     //GPIO¶Ë¿ÚÉèÖÃ
     GPIO_InitTypeDef GPIO_InitStructure;
     USART_InitTypeDef USART_InitStructure;
@@ -176,16 +177,16 @@ void uart2_init(u32 bound)
 
     GPIO_InitStructure.GPIO_Pin = GPIO_Pin_2;
     GPIO_InitStructure.GPIO_Mode = GPIO_Mode_AF;
-    GPIO_InitStructure.GPIO_Speed = GPIO_Speed_10MHz;
+    GPIO_InitStructure.GPIO_Speed = GPIO_Speed_40MHz;
     GPIO_InitStructure.GPIO_OType = GPIO_OType_PP; //ÍÆÍì¸´ÓÃÊä³ö
-   // GPIO_InitStructure.GPIO_PuPd = GPIO_PuPd_UP; //ÉÏÀ­
+    GPIO_InitStructure.GPIO_PuPd = GPIO_PuPd_UP; //ÉÏÀ­
     GPIO_Init(GPIOA, &GPIO_InitStructure);
 
 
     GPIO_InitStructure.GPIO_Pin = GPIO_Pin_3;
-    GPIO_InitStructure.GPIO_Speed = GPIO_Speed_10MHz;
+    GPIO_InitStructure.GPIO_Speed = GPIO_Speed_40MHz;
     GPIO_InitStructure.GPIO_Mode = GPIO_Mode_AF;
-   // GPIO_InitStructure.GPIO_OType = GPIO_OType_PP;
+    GPIO_InitStructure.GPIO_OType = GPIO_OType_PP;
     GPIO_InitStructure.GPIO_PuPd = GPIO_PuPd_UP;
     GPIO_Init(GPIOA, &GPIO_InitStructure);
 
@@ -209,9 +210,6 @@ void uart2_init(u32 bound)
     USART_Cmd(USART2, ENABLE);                    //Ê¹ÄÜ´®¿Ú
 
     USART_ITConfig(USART2, USART_IT_RXNE, ENABLE);
-#else
-		
-#endif
 
 }
 
@@ -303,98 +301,110 @@ void Uart3_SendStr(char*SendBuf)//
 }
 
 
-UART_BUF buf_uart1;     //CH340
-UART_BUF buf_uart2;     //NBIOT
-UART_BUF buf_uart3;     //TTL
-
-#ifdef MYDEBUG
-		void USART1_IRQHandler(void)                	//串口1中断服务函数
-			{
-			u8 Res;
-			if(USART_GetITStatus(USART1, USART_IT_RXNE) != RESET)  //接收中断（接收的数据必须是0xod,0x0a结尾）
-				{
-				Res =USART_ReceiveData(USART1);	//读取接收到的数据
-				
-				if((USART_RX_STA&0x8000)==0)//接收未完成
-					{
-					if(USART_RX_STA&0x4000) //接收到0X0D 
-						{
-						if(Res!=0x0a)USART_RX_STA=0;//接收错误，重新开始
-						else USART_RX_STA|=0x8000;	//接收完成了
-						}
-					else //还没有接收到0X0D
-						{	
-						if(Res==0x0d)USART_RX_STA|=0x4000;
-						else
-							{
-							USART_RX_BUF[USART_RX_STA&0X3FFF]=Res ;
-							USART_RX_STA++;
-							if(USART_RX_STA>(USART_REC_LEN-1))USART_RX_STA=0;//接收错误，重新开始 
-							}		 
-						}
-					}   		 
-				 } 
-		} 
-
-#else
-		void USART1_IRQHandler(void)                	//串口1中断服务函数
+		UART_BUF buf_uart1;     //CH340
+		static void uart1_receive_process_event(unsigned char ch )    
 		{
-				if(USART_GetITStatus(USART1, USART_IT_RXNE) != RESET)  
-				{
-						//buf_uart1.buf[buf_uart1.index++] =USART_ReceiveData(USART1);//接收模块的数据
 				if(buf_uart1.index >= BUFLEN)
 				{
-					buf_uart1.index = 0 ;
+						buf_uart1.index = 0 ;
 				}
 				else
 				{
-					buf_uart1.buf[buf_uart1.index++] = USART_ReceiveData(USART1);
+						buf_uart1.buf[buf_uart1.index++] = ch;
 				}
-				USART_ClearITPendingBit(USART1,USART_IT_RXNE);
-				}
-			 if(USART_GetFlagStatus(USART1,USART_FLAG_ORE)==SET)
+		}
+		#if MYDEBUG
+				void USART1_IRQHandler(void)                	//串口1中断服务函数
 				{
-						if(buf_uart1.index >= BUFLEN)
-				{
-					buf_uart1.index = 0 ;
-				}
-				else
-				{
-					buf_uart1.buf[buf_uart1.index++] = USART_ReceiveData(USART1);
-				}
-						USART_ClearFlag(USART1,USART_FLAG_ORE);
-				}
-		} 	
-#endif
+					u8 Res;
+					if(USART_GetITStatus(USART1, USART_IT_RXNE) != RESET)  //接收中断（接收的数据必须是0xod,0x0a结尾）
+					{
+							Res =USART_ReceiveData(USART1);	//读取接收到的数据		
+						/***************************新增4G模块透传调试**********************************/
+						#if Trans_DEBUG
+							 uart1_receive_process_event(Res); 
+						#endif
+						/***************************新增4G模块透传调试**********************************/
+							if((USART_RX_STA&0x8000)==0)//接收未完成
+							{
+									if(USART_RX_STA&0x4000) //接收到0X0D 
+									{
+										if(Res!=0x0a)USART_RX_STA=0;//接收错误，重新开始
+										else USART_RX_STA|=0x8000;	//接收完成了
+									}
+									else //还没有接收到0X0D
+									{	
+											if(Res==0x0d)USART_RX_STA|=0x4000;
+											else
+											{
+													USART_RX_BUF[USART_RX_STA&0X3FFF]=Res ;
+													USART_RX_STA++;
+													if(USART_RX_STA>(USART_REC_LEN-1))USART_RX_STA=0;//接收错误，重新开始 
+											}		 
+									}
+							}   		 
+						} 
+						/***************************新增4G模块透传调试**********************************/
+						#if Trans_DEBUG
+								if(USART_GetFlagStatus(USART1,USART_FLAG_ORE)==SET)
+								{
+										uart1_receive_process_event(USART_ReceiveData(USART1));
+										USART_ClearFlag(USART1,USART_FLAG_ORE);
+								}
+						#endif
+						/***************************新增4G模块透传调试**********************************/
+				} 
 
-void nbiot_receive_process_event(unsigned char ch )     //´®¿Ú2¸ønbiotÓÃ
+		#else
+				void USART1_IRQHandler(void)                	//串口1中断服务函数
+				{
+						if(USART_GetITStatus(USART1, USART_IT_RXNE) != RESET)  
+						{
+							uart1_receive_process_event(USART_ReceiveData(USART1));   
+							USART_ClearITPendingBit(USART1,USART_IT_RXNE);
+						}
+					if(USART_GetFlagStatus(USART1,USART_FLAG_ORE)==SET)
+					{
+							uart1_receive_process_event(USART_ReceiveData(USART1));
+							USART_ClearFlag(USART1,USART_FLAG_ORE);
+					}
+				} 	
+		#endif
+#endif	
+				
+UART_BUF buf_uart2;     //NBIOT
+UART_BUF buf_uart3;     //TTL
+				
+
+		
+static void nbiot_receive_process_event(unsigned char ch )     
 {
-    if(buf_uart2.index >= BUFLEN)
-    {
-        buf_uart2.index = 0 ;
-    }
-    else
-    {
-        buf_uart2.buf[buf_uart2.index++] = ch;
-    }
+		if(buf_uart2.index >= BUFLEN)
+		{
+				buf_uart2.index = 0 ;
+		}
+		else
+		{
+				buf_uart2.buf[buf_uart2.index++] = ch;
+		}
 }
+
 
 void USART2_IRQHandler(void)                            
 {
-    if(USART_GetITStatus(USART2, USART_IT_RXNE)==SET)
-    {
-        nbiot_receive_process_event(USART_ReceiveData(USART2));
-        USART_ClearITPendingBit(USART2,USART_IT_RXNE);
-    }
+		if(USART_GetITStatus(USART2, USART_IT_RXNE)==SET)
+		{
+				nbiot_receive_process_event(USART_ReceiveData(USART2));
+				USART_ClearITPendingBit(USART2,USART_IT_RXNE);
+		}
 
-    if(USART_GetFlagStatus(USART2,USART_FLAG_ORE)==SET)
-    {
-        nbiot_receive_process_event(USART_ReceiveData(USART2));
-        USART_ClearFlag(USART2,USART_FLAG_ORE);
-    }
-}
-#endif	
-
+		if(USART_GetFlagStatus(USART2,USART_FLAG_ORE)==SET)
+		{
+			nbiot_receive_process_event(USART_ReceiveData(USART2));
+			USART_ClearFlag(USART2,USART_FLAG_ORE);
+		}
+}	
+		
 
 void Clear_Buffer(void)
 {

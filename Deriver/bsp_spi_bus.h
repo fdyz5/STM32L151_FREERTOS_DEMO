@@ -13,6 +13,7 @@
 
 #ifndef __BSP_SPI_BUS_H
 #define __BSP_SPI_BUS_H
+#include <stdint.h>
 
 #define	SPI1_BUS_EN	0
 #define	SPI2_BUS_EN	1

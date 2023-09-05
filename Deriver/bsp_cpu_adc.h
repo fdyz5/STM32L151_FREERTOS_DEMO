@@ -1,6 +1,6 @@
 #ifndef _BSP_CPU_ADC_H
 #define _BSP_CPU_ADC_H
-
+#include <stdint.h>
 void bsp_cpu_adc_init(void);
 
 uint16_t bsp_cpu_adc_get_battery(void) ;

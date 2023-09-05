@@ -4,8 +4,12 @@
 #include "stm32l1xx.h"
 #include "bsp_cpu_adc.h"
 #include "bsp_para.h"
-#include "bsp_timer.h"
+#include "delay.h"
 
+#include "FreeRTOS.h"
+#include "task.h"
+
+#define bsp_timer_delay_ms  delay_xms
 #define GPIO_RCC_AI1					RCC_AHBPeriph_GPIOA  
 #define AI1_GPIO_PORT             		GPIOA
 #define AI1_PIN                  		GPIO_Pin_5           
@@ -180,7 +184,7 @@ uint16_t bsp_cpu_adc_get_channel2(uint16_t vref)
 //		printf("->channel 2 is not enable\r\n");
 //		return 0;
 //	}
-
+ // taskENTER_CRITICAL();//进入临界段，禁止任务切换
 	ADC_Cmd(ADC1, ENABLE);
 	
     while(ADC_GetFlagStatus(ADC1, ADC_FLAG_ADONS) == RESET)
@@ -204,9 +208,9 @@ uint16_t bsp_cpu_adc_get_channel2(uint16_t vref)
 	ADC_Cmd(ADC1, DISABLE);
 
 	temp    = bsp_cpu_adc_filter(buf);
-//	value   = vref * temp / 4096;
-	value   = temp;	
-//	printf("VAI1:%d.%02dV\r\n",value/100,value%100);
+//	value   = vref * temp / 4096; 
+	value   = temp; 	
+//	printf("->channel 2 voltage:%d.%02dV\r\n",value/100,value%100);
 	bsp_timer_delay_ms(10);
 	
     return value;

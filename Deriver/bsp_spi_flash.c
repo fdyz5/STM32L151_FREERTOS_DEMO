@@ -765,4 +765,12 @@ static void sf_WaitForWriteEnd(void)
 	sf_SetCS(1);									/* 禁能片选 */
 }
 
+
+void vTest_SPI_FLASH(uint32_t addr)
+{
+	uint8_t _pDat[256];
+	
+	sf_EraseSector(addr);
+
+}
 /***************************** 安富莱电子 www.armfly.com (END OF FILE) *********************************/
