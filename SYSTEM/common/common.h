@@ -20,7 +20,7 @@
 #define __COMMON_H
 #include "stm32l1xx.h"
 #include "delay.h"
-
+#include "usart.h"
 /*********************************** 获取STM32 ID 地址 **************************************/
 #define CHIPID_STM32L1		0x1FF80050   //L1 系列的CHIP ID  地址
 #define CHIPID_STM32F1		0x1FFFF7E8   //F1 系列的CHIP ID  地址

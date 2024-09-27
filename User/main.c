@@ -20,9 +20,10 @@
 * 修改记录2：…
 ************************************************************************/
 #include "MainConfig.h"
-#include "usart.h"
+
 #include "app.h"
 
+#include "usmart.h"
 
 TaskHandle_t StartTask_Handler;  //任务句柄 创建启动任务
 
@@ -72,15 +73,21 @@ int main(void)
     	系统时钟缺省配置为 32MHz ，如果需要更改，可以修改 system_stm32l1xx.c 文件*/
     /* 优先级分组设置为 4 ，可配置 0~15 级抢占式优先级， 0 级子优先级，即不存在子优先级。*/
     NVIC_PriorityGroupConfig(NVIC_PriorityGroup_4);
-	
     delay_init();			//延时初始化代码
-#if DEBUG_LOG_PRINTF
-    USART1_Init(115200);
-#endif
+
+		uart_init(9600);
+		uart2_init(115200);
+		uart3_init(115200);
+    printf("\r\n ############ http://www.csgsm.com/ ############\r\n ############("__DATE__ " - " __TIME__ ")############");
     bsp_Init();				//所有硬件固件初始化
 #if DEBUG_LOG_PRINTF
     LOG_D(STM32_VERSION);
 #endif	
+
+#if MYDEBUG
+    usmart_dev.init(32);
+#endif
+	
 	
     /* 创建任务 */
     xTaskCreate((TaskFunction_t	)start_task,		  	//任务函数

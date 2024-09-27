@@ -63,7 +63,7 @@ extern uint32_t SystemCoreClock;
 //一般是硬件计算前导零指令，如果所使用的
 //MCU没有这些硬件指令的话此宏应该设置为0！
 
-#define configUSE_TICKLESS_IDLE					1                       //1启用低功耗tickless模式
+#define configUSE_TICKLESS_IDLE					0                       //1启用低功耗tickless模式
 #if (configUSE_TICKLESS_IDLE == 1)
 #define configTICK_RATE_HZ						(100)     				
 #else
